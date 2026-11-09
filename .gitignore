@@ -3,3 +3,4 @@ __pycache__/
 *.py[cod]
 presentation/node_modules/
 presentation/out/
+presentation
