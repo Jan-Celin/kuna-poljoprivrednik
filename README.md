@@ -6,7 +6,6 @@ Kuna je lokalna web-aplikacija koja korisniku pomaže povezati granicu polja, un
 
 - `app/` — web-aplikacija i lokalni Python poslužitelj
 - `app/docs/` — arhitektura, ograničenja i registar izvora podataka
-- `presentation/` — Remotion izvor za izradu videa iz stvarnih snimaka aplikacije
 
 ## Pokretanje aplikacije
 
