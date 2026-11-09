@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="hr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Kuna Pametno polje — objašnjiva podrška odlukama za mala poljoprivredna gospodarstva." />
+    <title>Kuna · Pametno polje</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=2" />
+    <link rel="stylesheet" href="src/styles.css" />
+    <link rel="stylesheet" href="src/workspace.css" />
+    <link rel="stylesheet" href="src/interaction.css" />
+    <link rel="stylesheet" href="src/workspace-v2.css" />
+    <link rel="stylesheet" href="src/kuna-icon.css" />
+    <link rel="stylesheet" href="src/reality.css" />
+    <link rel="stylesheet" href="src/map-v3.css" />
+    <link rel="stylesheet" href="src/map-v4.css?v=20261109i" />
+    <link rel="stylesheet" href="src/ai-access.css?v=20261109" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <main>
+        <header class="mapbar">
+          <a class="map-brand" href="#pregled" aria-label="Kuna, karta polja">
+            <img src="assets/kuna-pine-marten.svg" alt="" aria-hidden="true"><strong>Kuna</strong>
+          </a>
+          <label class="field-picker"><span>Polje</span><select id="field-select"><option value="juzna">Južna njiva · 4,8 ha</option><option value="vocnjak">Gornji voćnjak · 1,2 ha</option></select></label>
+          <label class="place-search"><span>⌕</span><input aria-label="Pronađi polje na karti" placeholder="Odaberi polje ili pomakni kartu" /></label>
+          <div class="mapbar-actions"><button class="icon-text" data-modal="rizici">Upozorenja <b id="alert-badge">3</b></button><button class="icon-button" id="open-roles" aria-label="Uloge i pristup">IH</button></div>
+        </header>
+
+        <section class="view active map-workspace" id="pregled">
+          <section class="live-map" aria-label="Interaktivna karta s javnim podacima"><div id="real-map" aria-label="Karta sa satelitskom snimkom i granicama polja"></div><div class="map-zoom"><button id="map-zoom-in" aria-label="Povećaj kartu">+</button><button id="map-zoom-out" aria-label="Smanji kartu">−</button></div><div class="map-alt">Satelitska snimka i granice polja.</div></section>
+          <aside class="map-sidebar" aria-label="Upravljanje poljem">
+            <div class="sidebar-field"><span>Aktivno polje</span><strong>Južna njiva</strong><small>4,8 ha · kukuruz</small></div>
+            <section class="sidebar-summary"><button data-modal="rizici"><b>1</b><span>Upozorenja</span><i>›</i></button><button data-modal="dnevnik"><b>3</b><span>Dnevnik</span><i>›</i></button></section>
+            <section class="sidebar-actions"><span class="menu-kicker">Rad s poljem</span><button id="new-entry">＋ Novi zapis</button><button data-modal="rizici">Upozorenja i rad</button><button data-modal="scenariji">Scenariji sjetve</button><button data-modal="bioraznolikost">Bioraznolikost</button><button data-modal="dnevnik">Dnevnik</button><button data-modal="izvori">Izvori i metoda</button></section>
+            <section class="sidebar-layers"><span class="menu-kicker">Slojevi</span><label><input data-map-layer="imagery" type="checkbox" checked><span>Satelitska snimka</span></label><span class="layer-group-label">Polja</span><div class="field-layer-list" id="field-layer-list"></div><span class="layer-group-label">Otvoreni podaci</span><label><input data-map-layer="habitats" type="checkbox"><span>Staništa RH · 1:25 000</span></label><small class="layer-detail" id="habitat-detail" hidden></small><label><input data-map-layer="arkod" type="checkbox"><span>ARKOD parcele · tjedno</span></label><label><input data-map-layer="crop2022" type="checkbox"><span>Usjevi EU · 10 m · 2022.</span></label><small class="layer-detail" id="crop-detail" hidden></small><details class="crop-legend" id="crop-legend" hidden><summary>Legenda boja · 25 klasa</summary><div><span><i style="background:#ff1b1b"></i>umjetne površine</span><span><i style="background:#ad7900"></i>obična pšenica</span><span><i style="background:#8c604f"></i>durum pšenica</span><span><i style="background:#d60079"></i>ječam</span><span><i style="background:#a500a0"></i>raž</span><span><i style="background:#9d6594"></i>zob</span><span><i style="background:#ffd10a"></i>kukuruz</span><span><i style="background:#00a4dc"></i>riža</span><span><i style="background:#c899ad"></i>tritikale</span><span><i style="background:#d998b7"></i>ostale žitarice</span><span><i style="background:#d49b00"></i>krumpir</span><span><i style="background:#a100ed"></i>šećerna repa</span><span><i style="background:#00ae58"></i>ostali korjenasti usjevi</span><span><i style="background:#00a458"></i>industrijski usjevi</span><span><i style="background:#f0dc00"></i>suncokret</span><span><i style="background:#c4fa00"></i>uljana repica</span><span><i style="background:#006000"></i>soja</span><span><i style="background:#eb9d70"></i>suhe mahunarke</span><span><i style="background:#d9b0ff"></i>krmni usjevi</span><span><i style="background:#aaa68b"></i>golo obradivo tlo</span><span><i style="background:#97ca97"></i>šume i grmlje</span><span><i style="background:#e4ffbd"></i>travnjak</span><span><i style="background:#b3aa8d"></i>golo prirodno tlo</span><span><i style="background:#009bd8"></i>voda</span><span><i style="background:#85baba"></i>močvare</span></div></details><label><input data-map-layer="soil" type="checkbox"><span>pH tla · SoilGrids 250 m</span></label><label><input data-map-layer="ndvi" type="checkbox"><span>Vegetacija · NASA NDVI</span></label><label><input data-map-layer="temperature" type="checkbox"><span>Temperatura 2 m · NASA</span></label><label><input data-map-layer="weather" type="checkbox" checked><span>Oborina i vlaga tla · uživo</span></label><small id="map-status">Snimka: Esri, Maxar</small><button class="draw-tool" id="draw-field">＋ Nacrtaj polje</button></section>
+          </aside>
+          <aside class="field-inspector" aria-label="Podaci odabranog polja">
+            <header><div><span class="pin-label">ODABRANO POLJE</span><h1>Južna njiva</h1><p>4,8 ha · kukuruz</p></div><div class="inspector-header-actions"><button class="rename-field" id="edit-field-crop">Usjev</button><button class="rename-field" id="rename-field">Preimenuj</button><button class="close-inspector" aria-label="Zatvori podatke polja">×</button></div></header>
+            <div class="inspector-tabs" role="tablist"><button class="active" data-inspector="now">Pregled</button><button data-inspector="week">Zemlja i voda</button><button data-inspector="history">Potencijal</button></div>
+            <div class="inspector-content" id="inspector-content">
+              <article class="advice-card"><span class="advice-kicker">SAŽETAK PODATAKA</span><strong>Za operativnu odluku prvo usporedite pH tla, stanje vegetacije i trenutačnu vlagu tla; zatim potvrdite nalaz obilaskom ili uzorkom.</strong><p>Slojevi na karti su globalni modeli i satelitski rasteri, a ne izmišljene zone unutar polja.</p><button class="outline-button" data-modal="procjena">Detalji</button></article>
+            </div>
+            <footer><button class="subtle-action" data-modal="izvori">Izvori podataka</button><button class="subtle-action" id="download-field-pdf">PDF izvješće</button><button class="primary-button" id="open-assistant">Pitaj AI</button></footer>
+          </aside>
+        </section>
+
+        <section class="view" id="scenariji">
+          <div class="page-intro"><div><p class="eyebrow">USPOREDBA SCENARIJA</p><h1>Datum mijenja izloženost</h1><p class="intro-copy">Usporedba je ponovljiva iz javnog klimatskog konteksta i odabranih prototipnih pragova.</p></div></div>
+          <div class="planner-toolbar"><label>Usjev <select id="crop-select"><option>Kukuruz</option><option>Suncokret</option><option>Soja</option><option>Pšenica</option></select></label><label>Datum sjetve <input id="planting-date" type="date" value="2027-04-18" /></label><button class="primary-button" id="add-scenario">Dodaj scenarij</button></div>
+          <div class="scenario-grid" id="scenario-grid"></div>
+          <details class="method-note"><summary>Kako se računa prototipni pokazatelj</summary><p>Pragovi za mraz, sušu i višak vode konfigurirani su u <code>src/app.js</code>. Kombiniraju se s klimatološkim kontekstom, općim regionalnim trendom i potpunosti podataka. Ovo nije prognoza uspjeha usjeva niti preporuka za tretman.</p></details>
+        </section>
+
+        <section class="view" id="rizici">
+          <div class="page-intro"><div><p class="eyebrow">SLJEDEĆIH 14 DANA</p><h1>Rizici za provjeru</h1><p class="intro-copy">Mogući rizici iz javne prognoze i konteksta polja. Svaki je radni podsjetnik, ne dijagnoza.</p></div><button class="outline-button" id="alert-settings">Postavke obavijesti</button></div>
+          <div class="timeline" id="timeline"></div>
+          <section class="action-list"><div class="section-head"><div><p class="eyebrow">RADNI ZADACI</p><h2>Dodijeljeni sljedeći koraci</h2></div><button class="text-button" id="new-task">Dodaj zadatak</button></div><div id="tasks"></div></section>
+        </section>
+
+        <section class="view" id="dnevnik">
+          <div class="page-intro"><div><p class="eyebrow">PRIVATNI ZAPISI</p><h1>Dnevnik polja</h1><p class="intro-copy">Zapisi se pohranjuju lokalno u ovom pregledniku. Ne šalju se u javne izvore niti za učenje modela.</p></div><button class="primary-button" id="new-entry">Novi zapis</button></div>
+          <div class="journal-layout"><section id="journal-list" class="journal-list"></section><aside class="journal-summary"><p class="eyebrow">SEZONA 2026.</p><dl><div><dt>Usjev</dt><dd>Kukuruz</dd></div><div><dt>Sjetva</dt><dd>18. travnja</dd></div><div><dt>Navodnjavanje</dt><dd>Nije evidentirano</dd></div><div><dt>Zapisa</dt><dd id="entry-count">3</dd></div></dl><button class="outline-button" id="clear-private-data">Izbriši lokalne zapise</button></aside></div>
+        </section>
+
+        <section class="view" id="bioraznolikost">
+          <div class="page-intro"><div><p class="eyebrow">PRIRODNA INFRASTRUKTURA</p><h1>Plan bioraznolikosti</h1><p class="intro-copy">Prijedlozi vežu cilj, kontekst polja i vidljivu ekološku evidenciju; nisu popis popularnih vrsta.</p></div></div>
+          <div class="bio-controls"><label>Cilj na polju <select id="bio-objective"><option value="pollinators">Oprašivači</option><option value="erosion">Smanjenje erozije</option><option value="water">Zadržavanje vode</option><option value="connectivity">Povezivanje staništa</option></select></label><button class="primary-button" id="update-bio">Ažuriraj prijedloge</button></div><div class="bio-layout"><section class="placement-map"><div class="placement-title">Koncept smještaja <small>nije projekt sadnje</small></div><svg viewBox="0 0 500 330" role="img" aria-label="Koncept smještaja rubnog pojasa i živice"><rect width="500" height="330" fill="#e4ead8"/><path d="M0 270c120-33 200-17 290-45s130-10 210-35v140H0Z" fill="#a9c588"/><polygon points="75,52 358,29 429,142 362,270 97,250 43,152" fill="#d9b248" opacity=".6"/><path id="placement-path" d="M56 170 103 254 357 275" stroke="#1c4937" stroke-width="12" fill="none" stroke-dasharray="4 7"/><circle cx="182" cy="125" r="33" fill="#d99165" opacity=".8"/><text x="180" y="130" text-anchor="middle">Pojas</text></svg><p id="placement-caption">Rubni cvjetni pojas uz južni rub; izbjegava radni pristup.</p></section><section id="bio-cards" class="bio-cards"></section></div>
+        </section>
+
+        <section class="view" id="izvori">
+          <div class="page-intro"><div><p class="eyebrow">PROVENIJENCIJA</p><h1>Izvori i metoda</h1><p class="intro-copy">Kartica nikada ne skriva odakle dolazi podatak, kada je dohvaćen i što se iz njega računa.</p></div></div>
+          <div class="source-summary"><strong>Prikaz razlikuje službene javne slojeve od procjena temeljenih na pravilima</strong><span>Svaki prostorni odgovor bilježi izvor, vrijeme i metodu dohvaćanja.</span></div><div id="source-table" class="source-table"></div>
+          <section class="method-columns"><article><h2>Razdvajanje nalaza</h2><p><strong>Javni podatak</strong> opisuje službeni sloj ili seriju. <strong>Pravilo</strong> spaja vidljive ulaze i konfigurirani prag. <strong>AI objašnjenje</strong> samo prepričava zapise koje je aplikacija već citirala.</p></article><article><h2>Ograničenja</h2><p>Prognozni adapter još nije povezan. Karte i brojke bez vremenske oznake ne smatraju se opažanjima u stvarnom vremenu.</p></article></section>
+        </section>
+      </main>
+    </div>
+    <div class="assistant-dock"><span class="ai-spark">✦</span><span>Savjeti su generirani uz pomoć umjetne inteligencije i mogu sadržavati pogreške. Provjerite izvore i po potrebi se obratite stručnjaku.</span><button id="open-assistant-2">Otvori pomoćnika</button></div>
+    <dialog id="assistant-dialog"><div class="dialog-head"><div><p class="eyebrow">KUNA POMOĆNIK</p><h2>Pitajte o odabranom polju</h2></div><button class="close-dialog" aria-label="Zatvori">×</button></div><p class="ai-warning">Odgovor generira lokalni jezični model samo iz stanja polja i navedenih izvora. Može pogriješiti; provjerite izvor i stanje na terenu.</p><div id="chat-log" class="chat-log"><div class="assistant-message">Postavite pitanje slobodnim tekstom. Odgovor će navesti izvore konteksta; ako lokalni model nije pokrenut, aplikacija će to jasno javiti.</div></div><form id="chat-form"><input id="chat-input" required placeholder="Npr. Što trebam provjeriti prije najavljene kiše?" aria-label="Pitanje pomoćniku"/><button class="primary-button">Pošalji</button></form></dialog>
+    <dialog id="entry-dialog"><div class="dialog-head"><div><p class="eyebrow">PRIVATNI ZAPIS</p><h2>Novi zapis</h2></div><button class="close-dialog" aria-label="Zatvori">×</button></div><form id="entry-form"><label>Datum<input name="date" type="date" required /></label><label>Vrsta opažanja<select name="type"><option>Obilazak</option><option>Stanje vode</option><option>Fenofaza</option><option>Štetnici</option><option>Radnja</option></select></label><label>Bilješka<textarea name="note" required placeholder="Što ste uočili na polju?"></textarea></label><button class="primary-button">Spremi lokalno</button></form></dialog>
+    <dialog id="roles-dialog"><div class="dialog-head"><div><p class="eyebrow">TIM I PRISTUP</p><h2>Uloge na gospodarstvu</h2></div><button class="close-dialog" aria-label="Zatvori">×</button></div><div class="roles"><div><strong>Ivan Horvat</strong><span>Vlasnik · puni pristup</span></div><div><strong>Marija Horvat</strong><span>Savjetnica · čita polja i izvještaje</span></div><div><strong>Radnik</strong><span>Vidi samo dodijeljene radne zadatke</span></div></div><p class="small-note">Pristup zapisima provjerava se prema ulozi korisnika i dodijeljenom polju.</p></dialog>
+    <dialog id="rename-field-dialog"><div class="dialog-head"><div><p class="eyebrow">POLJE</p><h2>Preimenuj polje</h2></div><button class="close-dialog" aria-label="Zatvori">×</button></div><form id="rename-field-form"><label>Naziv polja<input id="rename-field-input" name="name" required maxlength="42" /></label><button class="primary-button">Spremi naziv</button></form></dialog>
+    <dialog id="field-crop-dialog"><div class="dialog-head"><div><p class="eyebrow">POLJE</p><h2>Što je zasađeno?</h2></div><button class="close-dialog" aria-label="Zatvori">×</button></div><form id="field-crop-form"><label>Usjev / kultura<input id="field-crop-input" required maxlength="60" placeholder="npr. kukuruz" /></label><label>Sorta ili napomena<input id="field-variety-input" maxlength="80" placeholder="npr. FAO grupa, ekološka proizvodnja" /></label><label>Datum sjetve / sadnje<input id="field-planting-input" type="date" /></label><button class="primary-button">Spremi za ovo polje</button></form></dialog>
+    <dialog id="field-report-dialog" class="field-report-dialog"><div class="dialog-head print-hidden"><div><p class="eyebrow">IZVJEŠĆE POLJA</p><h2>Pregled prije spremanja</h2></div><button class="close-dialog" aria-label="Zatvori">×</button></div><div id="field-report-content" class="field-report-content"></div><footer class="report-actions print-hidden"><button class="subtle-action close-dialog">Zatvori</button><button class="primary-button" id="print-field-report">Preuzmi PDF</button></footer></dialog>
+    <dialog id="workspace-dialog"><div class="dialog-head"><div><p class="eyebrow" id="workspace-kicker">POLJE</p><h2 id="workspace-title"></h2></div><button class="close-dialog" aria-label="Zatvori">×</button></div><div id="workspace-content" class="workspace-content"></div></dialog>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script src="src/app.js?v=20261109-ai"></script>
+  </body>
+</html>

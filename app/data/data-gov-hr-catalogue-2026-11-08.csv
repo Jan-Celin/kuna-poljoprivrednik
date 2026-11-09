@@ -1,0 +1,5 @@
+title,theme,publisher,catalogue_url,metadata_modified,formats
+Hidrografija INSPIRE,environment,Državna geodetska uprava,https://data.gov.hr/ckan/hr/dataset/hidrografija-inspire,2026-10-22T06:50:49.001433,ATOM; WMS
+Visine - INSPIRE,environment,Državna geodetska uprava,https://data.gov.hr/ckan/hr/dataset/visine-inspire,2026-10-22T06:49:51.511328,ATOM; WMS
+Žetvena površina proizvodnja i prirod oraničnih usjeva,agriculture_fisheries_forestry_and_food,Državni zavod za statistiku,https://data.gov.hr/ckan/hr/dataset/etvena-povr-ina-u-hektarima,2026-07-20T06:15:14.044649,HTML
+Ekološka mreža Natura 2000 Republike Hrvatske - INSPIRE,environment,Državna geodetska uprava,https://data.gov.hr/ckan/hr/dataset/ekoloka-mrea-natura-2000-republike-hrvatske-inspire,2026-03-13T21:40:00,WFS; WMS

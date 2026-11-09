@@ -1,0 +1,8 @@
+/* Public-domain illustration of Martes martes from Wikimedia Commons. */
+.map-brand img {
+  display: block;
+  width: 34px;
+  height: 24px;
+  object-fit: contain;
+  object-position: center;
+}
